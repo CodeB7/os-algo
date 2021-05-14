@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+	<div ng-app="myApp" ng-controller="myController">
+		<button ng-click="addRow()"> Add Row </button>
+
+		<!--CREATE A TABLE-->
+		<table> 
+			<tr>
+				<th>No.</th>
+				<th>Process Name</th>
+				<th>Arrival</th>
+				<th>Priority</th>
+			</tr>
+
+			<tr ng-repeat="process in processArray">
+				<td><label>{{$index + 1}}</label></td>
+				<td><label>{{process.name}}</label></td>
+				<td><input type="text" id="arrival" value="{{process.arrival}}"></td>
+				<td><input type="text" id="priority" value="{{process.priority}}"></td>
+				<td><input type="checkbox" ng-model="process.Remove"/></td>
+			</tr>
+		</table>
+
+		<div>
+			<button ng-click="submit()">Submit Data</button>   
+			<button ng-click="removeRow()">Remove Row</button>
+		</div>
+
+		<div id="display" style="padding:10px 0;">{{display}}</div>
+	</div>
+</body>
+
+<!--The Controller-->
+<script>
+	var app = angular.module('myApp', []);
+	app.controller('myController', function ($scope) {
+		$scope.index = 1;
+
+        // JSON ARRAY TO POPULATE TABLE.
+        $scope.processArray =
+        [
+        { 'name': 'p0', 'arrival': 5, 'priority': 1 },
+        ];
+
+        // GET VALUES FROM INPUT BOXES AND ADD A NEW ROW TO THE TABLE.
+        $scope.addRow = function () {
+        	var _process = [];
+        	if($scope.index >= 5) {
+        		alert("Sorry, only 5 processes are allowed!");
+        		return;
+        	}
+        	_process.name = "p" + $scope.index;
+        	_process.arrival = $scope.index;
+        	_process.priority = 0;
+
+        	$scope.processArray.push(_process);
+        	$scope.index+= 1;
+        };
+
+        // Remove selected rows from table.
+        $scope.removeRow = function () {
+    		if ($scope.processArray.length == 1)
+    		{
+    			alert("Need to have minimum of 1 row");
+    			return;
+    		}
+
+        	var arrProcess = [];
+        	angular.forEach($scope.processArray, function (value) {
+        		alert($scope.processArray.length == 1);
+
+        		if (!value.Remove) {
+        			arrProcess.push(value);
+        		}
+        	});
+        	$scope.processArray = arrProcess;
+        };
+
+        // Finally, submit the data.
+        $scope.submit = function () {
+        	var arrProcess = [];
+        	for (var i = 0 ; i < $scope.index; i++) {
+        		// console.log(document.getElementById("arrival").value);
+        		// console.log(document.getElementById("priority").value);
+        	}
+        	$scope.display = arrProcess;
+        };
+    });
+</script>
+</html>
