@@ -2,6 +2,9 @@
 <html>
 <head>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  	<script type="text/javascript" src="gantt_chart.js"></script>
+  	<script type="text/javascript" src="fcfs.js"></script>
+
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
@@ -14,13 +17,15 @@
 				<th>No.</th>
 				<th>Process Name</th>
 				<th>Arrival</th>
+				<th>Time Taken (s)</th>
 				<th>Priority</th>
 			</tr>
 
 			<tr ng-repeat="process in processArray">
 				<td><label>{{$index + 1}}</label></td>
 				<td><label>{{process.name}}</label></td>
-				<td><input type="text" id="arrival" value="{{process.arrival}}"></td>
+				<td><input type="text" id="arrival_{{$index}}" value="{{process.arrival}}"></td>
+				<td><input type="text" id="time_taken_{{$index}}" value="{{process.time_taken}}"></td>
 				<td><input type="text" id="priority" value="{{process.priority}}"></td>
 				<td><input type="checkbox" ng-model="process.Remove"/></td>
 			</tr>
@@ -33,6 +38,11 @@
 
 		<div id="display" style="padding:10px 0;">{{display}}</div>
 	</div>
+
+	<!-- Plot the Gantt Chart -->
+	<div id="chartContainer" style="height: 300px; width: 100%;"></div>
+	<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
 </body>
 
 <!--The Controller-->
@@ -44,7 +54,7 @@
         // JSON ARRAY TO POPULATE TABLE.
         $scope.processArray =
         [
-        { 'name': 'p0', 'arrival': 5, 'priority': 1 },
+        { 'name': 'p0', 'arrival': 5, 'priority': 1, 'time_taken': 5 },
         ];
 
         // GET VALUES FROM INPUT BOXES AND ADD A NEW ROW TO THE TABLE.
@@ -57,9 +67,9 @@
         	_process.name = "p" + $scope.index;
         	_process.arrival = $scope.index;
         	_process.priority = 0;
-
+        	_process.time_taken = 5;
         	$scope.processArray.push(_process);
-        	$scope.index+= 1;
+        	$scope.index += 1;
         };
 
         // Remove selected rows from table.
@@ -85,11 +95,12 @@
         // Finally, submit the data.
         $scope.submit = function () {
         	var arrProcess = [];
+        	plotGanttChart();
         	for (var i = 0 ; i < $scope.index; i++) {
         		// console.log(document.getElementById("arrival").value);
         		// console.log(document.getElementById("priority").value);
         	}
-        	$scope.display = arrProcess;
+        	// $scope.display = arrProcess;
         };
     });
 </script>
