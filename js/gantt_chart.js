@@ -1,9 +1,27 @@
-function plotGanttChart () {
 
-dataPointsList = fcfs();
+function plotGanttChart (algo_value) {
+
+switch(algo_value) {
+  case 0:
+    dataPointsList = fcfs();
+    break;
+  case 1:
+    dataPointsList = sjf();
+    break;
+  case 2:
+    dataPointsList = priority_scheduling();    
+    break;
+  default:
+    dataPointsList = fcfs();
+}
+
 
 var chart = new CanvasJS.Chart("chartContainer", {
   animationEnabled: true,
+  animationDuration: 1000,
+  zoomEnabled: true, 
+  zoomType: "xy",
+  theme: "dark2",
   exportEnabled: true,
   title: {
     text: "Process Scheduling Gantt Chart"

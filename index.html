@@ -2,14 +2,20 @@
 <html>
 <head>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
-  	<script type="text/javascript" src="gantt_chart.js"></script>
-  	<script type="text/javascript" src="fcfs.js"></script>
+	<script type="text/javascript" src="js/gantt_chart.js"></script>
+	<script type="text/javascript" src="js/fcfs.js"></script>
+	<script type="text/javascript" src="js/sjf.js"></script>
+	<script type="text/javascript" src="js/priority_scheduling.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
 	<div ng-app="myApp" ng-controller="myController">
 		<button ng-click="addRow()"> Add Row </button>
+		<select ng-init="algo = algorithm_names[0]" ng-model="algo" ng-options="algorithm.algorithm_name for algorithm in algorithm_names">
+		</select>
+		<input type="text" id="algorithm_name_value" hidden="true" value="{{algo.value}}">
+		<p>Algorithm: {{algo.algorithm_name}}</p>
 
 		<!--CREATE A TABLE-->
 		<table> 
@@ -26,7 +32,7 @@
 				<td><label>{{process.name}}</label></td>
 				<td><input type="text" id="arrival_{{$index}}" value="{{process.arrival}}"></td>
 				<td><input type="text" id="time_taken_{{$index}}" value="{{process.time_taken}}"></td>
-				<td><input type="text" id="priority" value="{{process.priority}}"></td>
+				<td><input type="text" id="priority_{{$index}}" value="{{process.priority}}"></td>
 				<td><input type="checkbox" ng-model="process.Remove"/></td>
 			</tr>
 		</table>
@@ -51,6 +57,12 @@
 	app.controller('myController', function ($scope) {
 		$scope.index = 1;
 
+		$scope.algorithm_names = [
+	        {algorithm_name : "First Come First Serve", value : 0},
+	        {algorithm_name : "Shortest Job First", value : 1},
+	        {algorithm_name : "Priority Scheduling", value : 2}
+	    ];
+
         // JSON ARRAY TO POPULATE TABLE.
         $scope.processArray =
         [
@@ -74,31 +86,27 @@
 
         // Remove selected rows from table.
         $scope.removeRow = function () {
-    		if ($scope.processArray.length == 1)
-    		{
+        	if ($scope.processArray.length == 1)
+        	{
     			// Need to have minimum of 1 row
     			alert("Need to have minimum of 1 row");
     			return;
     		}
 
-        	var arrProcess = [];
-        	angular.forEach($scope.processArray, function (value) {
-        		if (!value.Remove) {
-        			arrProcess.push(value);
-        		}
-        	});
-        	$scope.processArray = arrProcess;
-        };
+    		var arrProcess = [];
+    		angular.forEach($scope.processArray, function (value) {
+    			if (!value.Remove) {
+    				arrProcess.push(value);
+    			}
+    		});
+    		$scope.processArray = arrProcess;
+    	};
 
         // Finally, submit the data.
         $scope.submit = function () {
         	var arrProcess = [];
-        	plotGanttChart();
-        	for (var i = 0 ; i < $scope.index; i++) {
-        		// console.log(document.getElementById("arrival").value);
-        		// console.log(document.getElementById("priority").value);
-        	}
-        	// $scope.display = arrProcess;
+        	algo_value = parseInt(document.getElementById('algorithm_name_value').value);
+        	plotGanttChart(algo_value);
         };
     });
 </script>
